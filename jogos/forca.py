@@ -9,10 +9,10 @@ def jogar():
     palavra_secreta_upper = palavra_secreta.upper()
 
     chutes = []
-    mascara = list("_" * len(palavra_secreta))
+    mascara = list("_" * len(palavra_secreta)) # "_" for letra in palavra_secreta
     enforcou = False
     acertou = False
-    chances = 10
+    chances = len(palavra_secreta) + 6
 
     while(not enforcou and not acertou):
         print()
