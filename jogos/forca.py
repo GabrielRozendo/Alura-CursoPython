@@ -1,3 +1,5 @@
+import random
+
 def jogar():
     tamanho = 50
     print("*"*tamanho)
@@ -5,7 +7,15 @@ def jogar():
     print("*"*tamanho)
     print()
 
-    palavra_secreta = "banana"
+    palavras = []
+    
+    with open("palavras.txt", "r") as arquivo:
+        for linha in arquivo:
+            palavras.append(linha.strip())
+
+    numero_aleatorio = random.randrange(0, len(palavras))
+    palavra_secreta = palavras[numero_aleatorio]
+
     palavra_secreta_upper = palavra_secreta.upper()
 
     chutes = []
