@@ -85,15 +85,20 @@ def pedir_chute(mascara, chutes, erros_obj):
 
 def validar_chute(chutes, chute):
     if len(chute) < 1:
-        print(f"É dificil digitar uma letra?! Tenta de novo aí né...")
+        print(f"É dificil digitar uma letra?! 😒 Tenta de novo aí né...")
         return False, chute, None
     elif len(chute) > 1:
-        print(f"É dificil digitar só uma letra?! :/ vamos ignorar o restante: {chute[1:]}")
+        print(f"É dificil digitar só uma letra?! :/ 😡 vamos ignorar o restante: {chute[1:]}")
         chute = chute[0]
+
+    if not chute.isalpha():
+        print("Só letras, blz? Tenta de novo aí que dessa vez não vou arrancar sua cabeça... 😇")
+        return False, chute, None
+
     chute_upper = chute.upper()
 
     if chute_upper in chutes:
-        print(f"Você já chutou a letra '{chute}', me ajuda aí né... Quer perder uma tentativa assim fácil?")
+        print(f"Você já chutou a letra '{chute}', me ajuda aí né... 🤦‍ Quer perder uma tentativa assim fácil?")
         return False, chute, None
 
     return True, chute, chute_upper
@@ -118,7 +123,7 @@ def imprimir_cabecalho():
     print()
 
 def imprimir_mensagem_perdeu(errou_tudo):
-    print("Você perdeu!".upper().center(tamanho_tela))
+    print("⚰️ Você perdeu! ☠️".upper().center(tamanho_tela))
     if errou_tudo:
         print("Poxa, mas também você não acertou nenhuma né...")
     else:
@@ -174,7 +179,7 @@ def imprimir_caveira():
 
 
 def imprimir_mensagem_acertou(chutes, erros):
-    print("Você ganhou!".upper().center(tamanho_tela))
+    print("🏆 Você ganhou! 👏".upper().center(tamanho_tela))
     print("Parabéns, você é o máximo!")
     print(f"Você conseguiu em {len(chutes)} tentativas")
     if erros <= 1:
