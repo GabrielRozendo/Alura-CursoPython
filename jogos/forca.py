@@ -83,10 +83,10 @@ def validar_chute(chutes, chute):
 def inicializar_mascara(palavra_secreta):
     return list("_" * len(palavra_secreta)) # "_" for letra in palavra_secreta
 
-def carregar_palavra_secreta():
+def carregar_palavra_secreta(nome_arquivo = "palavras.txt"):
     palavras = []
 
-    with open("palavras.txt", "r") as arquivo:
+    with open(nome_arquivo, "r") as arquivo:
         for linha in arquivo:
             palavras.append(linha.strip())
 
