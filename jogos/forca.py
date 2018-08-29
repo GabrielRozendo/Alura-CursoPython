@@ -6,10 +6,12 @@ class erros_obj():
     def __init__(self, erros, limite):
         self.erros = erros
         self.limite = limite
-        
+    
+    @property
     def chances_erro(self):
         return self.limite - self.erros
 
+    @property
     def enforcou(self):
         return self.erros == self.limite
 
@@ -18,13 +20,15 @@ class palavra_secreta_obj():
         self.palavra_secreta = palavra_secreta
         self.palavra_secreta_upper = palavra_secreta.upper()
         self.mascara = inicializar_mascara(palavra_secreta)
-        
+    
+    @property
     def mascara_str(self):
         return ' '.join(self.mascara)
 
     def atualizar_mascara(self, index):
         self.mascara[index] = self.palavra_secreta[index]
 
+    @property
     def acertou(self):
         return not "_" in self.mascara
 
@@ -65,15 +69,15 @@ def jogar():
     erro_obj = erros_obj(0, 7)
     chute_obj = chutes_obj()
 
-    while(not erro_obj.enforcou() and not acertou):
-        if pedir_chute(palavra_secreta_obj.mascara_str(), erro_obj, chute_obj):
+    while(not erro_obj.enforcou and not acertou):
+        if pedir_chute(palavra_secreta_obj.mascara_str, erro_obj, chute_obj):
             acertou = verificar_acerto(erro_obj, chute_obj, palavra_secreta_obj)
     
     desenhar_forca(erro_obj.erros)
     imprimir_resultado_cabecalho(palavra_secreta_obj.palavra_secreta)
     if acertou:        
         imprimir_mensagem_acertou(erro_obj, chute_obj.quantidade_chutes)
-    elif erro_obj.enforcou():
+    elif erro_obj.enforcou:
         imprimir_mensagem_perdeu(chute_obj.quantidade_chutes == erro_obj.erros)
     imprimir_resultado_rodape()
 
@@ -86,7 +90,7 @@ def verificar_acerto(erro_obj, chute_obj, palavra_secreta_obj):
                 print(f"Acertou. Letra '{chute_obj.chute}' na posição {index}")
                 palavra_secreta_obj.atualizar_mascara(index)
             index+=1
-        return palavra_secreta_obj.acertou()
+        return palavra_secreta_obj.acertou
     else:
         erro_obj.erros+=1
         # desenhar_forca(erro_obj.erros)
