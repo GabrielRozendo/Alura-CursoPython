@@ -110,8 +110,8 @@ def verificar_acerto(erro_obj, chute_obj, palavra_secreta_obj):
     else:
         erro_obj.erros+=1
         # desenhar_forca(erro_obj.erros)
-        plural_vez = "vez" + ("es" if erro_obj.chances_erro() > 1 else "")
-        complemento_msg = f" Você pode errar apenas mais {erro_obj.chances_erro()} {plural_vez}" if erro_obj.chances_erro() > 0 else ""
+        plural_vez = "vez" + ("es" if erro_obj.chances_erro > 1 else "")
+        complemento_msg = f" Você pode errar apenas mais {erro_obj.chances_erro} {plural_vez}" if erro_obj.chances_erro > 0 else ""
         print()
         print(f"Errou... Não tem '{chute_obj.chute}' na palavra."+complemento_msg)        
         return False
@@ -120,7 +120,7 @@ def pedir_chute(mascara, erros_obj, chute_obj):
     print()
     desenhar_forca(erros_obj.erros)
     print(f"Palavra: {mascara}")
-    chute_usuario = input(f"{chute_obj.tentativa}\tErros possíveis {erros_obj.chances_erro()}\tDigite uma letra: ")
+    chute_usuario = input(f"{chute_obj.tentativa}\tErros possíveis {erros_obj.chances_erro}\tDigite uma letra: ")
     print()
     return validar_chute(chute_obj, chute_usuario.strip())
 
