@@ -28,8 +28,6 @@ class palavra_secreta_obj():
     def acertou(self):
         return not "_" in self.mascara
 
-    def tamanho_palavra(self):
-        return len(self.palavra_secreta)
 
 class chutes_obj():
     def __init__(self):
@@ -74,7 +72,7 @@ def jogar():
     desenhar_forca(erro_obj.erros)
     imprimir_resultado_cabecalho(palavra_secreta_obj.palavra_secreta)
     if acertou:        
-        imprimir_mensagem_acertou(erro_obj, chute_obj.quantidade_chutes, palavra_secreta_obj.tamanho_palavra())
+        imprimir_mensagem_acertou(erro_obj, chute_obj.quantidade_chutes)
     elif erro_obj.enforcou():
         imprimir_mensagem_perdeu(chute_obj.quantidade_chutes == erro_obj.erros)
     imprimir_resultado_rodape()
@@ -170,41 +168,41 @@ def desenhar_forca(erros):
     print()
 
 def imprimir_trofeu():
-    print("       ___________      ")
-    print("      '._==_==_=_.'     ")
-    print("      .-\\:      /-.    ")
-    print("     | (|:.     |) |    ")
-    print("      '-|:.     |-'     ")
-    print("        \\::.    /      ")
-    print("         '::. .'        ")
-    print("           ) (          ")
-    print("         _.' '._        ")
-    print("        '-------'       ")
+    print("       ___________      ".center(tamanho_tela))
+    print("      '._==_==_=_.'     ".center(tamanho_tela))
+    print("      .-\\:      /-.    ".center(tamanho_tela))
+    print("     | (|:.     |) |    ".center(tamanho_tela))
+    print("      '-|:.     |-'     ".center(tamanho_tela))
+    print("        \\::.    /      ".center(tamanho_tela))
+    print("         '::. .'        ".center(tamanho_tela))
+    print("           ) (          ".center(tamanho_tela))
+    print("         _.' '._        ".center(tamanho_tela))
+    print("        '-------'       ".center(tamanho_tela))
 
 def imprimir_caveira():
-    print(r"    _______________         ")
-    print(r"   /               \       ")
-    print(r"  /                 \      ")
-    print(r"//                   \/\  ")
-    print(r"\|   XXXX     XXXX   | /   ")
-    print(r" |   XXXX     XXXX   |/     ")
-    print(r" |   XXX       XXX   |      ")
-    print(r" |                   |      ")
-    print(r" \__      XXX      __/     ")
-    print(r"   |\     XXX     /|       ")
-    print(r"   | |           | |        ")
-    print(r"   | I I I I I I I |        ")
-    print(r"   |  I I I I I I  |        ")
-    print(r"   \_             _/       ")
-    print(r"     \_         _/         ")
-    print(r"       \_______/           ")
+    print(r"      _______________        ".center(tamanho_tela))
+    print(r"     /               \       ".center(tamanho_tela))
+    print(r"    /                 \      ".center(tamanho_tela))
+    print(r" /\/                   \/\   ".center(tamanho_tela))
+    print(r" \ |   XXXX     XXXX   | /   ".center(tamanho_tela))
+    print(r"  \|   XXXX     XXXX   |/    ".center(tamanho_tela))
+    print(r"   |   XXX       XXX   |     ".center(tamanho_tela))
+    print(r"   |                   |     ".center(tamanho_tela))
+    print(r"   \__      XXX      __/     ".center(tamanho_tela))
+    print(r"     |\     XXX     /|       ".center(tamanho_tela))
+    print(r"     | |           | |       ".center(tamanho_tela))
+    print(r"     | I I I I I I I |       ".center(tamanho_tela))
+    print(r"     |  I I I I I I  |       ".center(tamanho_tela))
+    print(r"     \_             _/       ".center(tamanho_tela))
+    print(r"       \_         _/         ".center(tamanho_tela))
+    print(r"         \_______/           ".center(tamanho_tela))
 
 
-def imprimir_mensagem_acertou(erros_obj, quantidade_chutes, tamanho_palavra):
+def imprimir_mensagem_acertou(erros_obj, quantidade_chutes):
     print("🏆 Você ganhou! 👏".upper().center(tamanho_tela))
     print("Parabéns, você é o máximo!")
     print(f"Você conseguiu em {quantidade_chutes} tentativas")
-    if quantidade_chutes == tamanho_palavra:
+    if erros_obj.erros == 0:
         print("Você foi perfeito, não errou uma sequer! Que isso hein!")
     elif erros_obj.erros == erros_obj.limite - 1:
         print("Foi quase hein... última chance haha")
