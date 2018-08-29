@@ -3,48 +3,61 @@ import random
 tamanho_tela = 50
 
 class erros_obj():
+    """Classe para tratar os chutes errados"""
     def __init__(self, erros, limite):
         self.erros = erros
         self.limite = limite
     
     @property
     def chances_erro(self):
+        """Quantidade de erros possíveis antes de ser enforcado"""
         return self.limite - self.erros
 
     @property
     def enforcou(self):
+        """Verifica se foi enforcado pela quantidade de erros cometidos"""
         return self.erros == self.limite
 
 class palavra_secreta_obj():
+    """Classe para tratar a palavra secreta da forca"""
     def __init__(self, palavra_secreta):
+        """Inicializa o objeto informando a palavra a ser descoberta"""
         self.palavra_secreta = palavra_secreta
         self.palavra_secreta_upper = palavra_secreta.upper()
         self.mascara = inicializar_mascara(palavra_secreta)
     
     @property
     def mascara_str(self):
+        """Retorna a mascara em formato de impressão na tela"""
         return ' '.join(self.mascara)
 
     def atualizar_mascara(self, index):
+        """Atualiza a máscara exibindo as letras já descobertas"""
         self.mascara[index] = self.palavra_secreta[index]
 
     @property
     def acertou(self):
+        """Verifica se acertou todas as letras"""
         return not "_" in self.mascara
 
 
 class chutes_obj():
+    """Classe dos chutes"""
     def __init__(self):
+        """Inicializa o objeto chute"""
         self.chutes = []
         self._chute = None
         self.chupe_upper = None
 
     @property
     def chute(self):
+        """Retorna o último chute (atual)"""
         return self._chute
 
     @chute.setter
     def chute(self, value):
+        """Atribuí um valor ao chute
+        Já atualiza a versão em maiscúlo e também adiciona à lista"""
         if value:
             self._chute = value
             self.chute_upper = value.upper()
@@ -52,13 +65,16 @@ class chutes_obj():
 
     @property
     def quantidade_chutes(self):
+        """A quantidade de chutes válidos já realizados"""
         return len(self.chutes)
 
     @property
     def tentativa(self):
+        """Exibe a tentativa em questão"""
         return f"Tentativa {self.quantidade_chutes+1}!"
     
     def existe(self, chute):
+        """Verifica se a letra já foi chutada antes"""
         return chute in self.chutes or chute.upper() in self.chutes
 
 def jogar():
