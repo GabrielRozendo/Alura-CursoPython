@@ -2,6 +2,16 @@ import random
 
 tamanho_tela = 50
 
+class erros_obj():
+    def __init__(self, erros, limite):
+        self.erros = erros
+        self.limite = limite
+        
+    def chances_erro(self):
+        return self.limite - self.erros
+
+    def enforcou(self):
+        return self.erros == self.limite
 
 def jogar():
     imprimir_cabecalho()    
@@ -12,13 +22,12 @@ def jogar():
     mascara = inicializar_mascara(palavra_secreta)
     enforcou = False
     acertou = False    
-    erros = 0
-    limite_erros = 7
-    while(not enforcou and not acertou):
-        continuar, chute, chute_upper = pedir_chute(mascara, chutes, limite_erros-erros)
+    erro_obj = erros_obj(0, 7)
+
+    while(not erro_obj.enforcou() and not acertou):
+        continuar, chute, chute_upper = pedir_chute(mascara, chutes, erro_obj.limite)
         if continuar:
-            acertou, mascara, erros = verificar_acerto(erros, limite_erros, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara)
-        enforcou = erros == limite_erros
+            acertou, mascara = verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara)
         
     imprimir_resultado_cabecalho(palavra_secreta)
     if acertou:        
@@ -27,7 +36,7 @@ def jogar():
         imprimir_mensagem_perdeu()
     imprimir_resultado_rodape()
 
-def verificar_acerto(erros, limite_erros, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara):
+def verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara):
     if chute_upper in palavra_secreta_upper:
         index = 0
         for letra in palavra_secreta_upper:
@@ -36,14 +45,13 @@ def verificar_acerto(erros, limite_erros, chute, chute_upper, palavra_secreta, p
                 mascara[index] = palavra_secreta[index]
             index+=1
         acertou = not "_" in mascara
-        return acertou, mascara, erros
+        return acertou, mascara
     else:
-        erros+=1
-        desenha_forca(erros)
-        chances_erro = limite_erros - erros
-        plural_vez = "vez" + ("es" if chances_erro > 1 else "")
-        print(f"Errou... Não tem '{chute}' na palavra. Você pode errar apenas mais {chances_erro} {plural_vez}")        
-        return False, mascara, erros
+        erro_obj.erros+=1
+        desenha_forca(erro_obj.erros)
+        plural_vez = "vez" + ("es" if erro_obj.chances_erro() > 1 else "")
+        print(f"Errou... Não tem '{chute}' na palavra. Você pode errar apenas mais {erro_obj.chances_erro()} {plural_vez}")        
+        return False, mascara
 
 def pedir_chute(mascara, chutes, erros_possiveis):
     print()
