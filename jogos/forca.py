@@ -28,35 +28,64 @@ class palavra_secreta_obj():
     def acertou(self):
         return not "_" in self.mascara
 
+    def tamanho_palavra(self):
+        return len(self.palavra_secreta)
+
+class chutes_obj():
+    def __init__(self):
+        self.chutes = []
+        self._chute = None
+        self.chupe_upper = None
+
+    @property
+    def chute(self):
+        return self._chute
+
+    @chute.setter
+    def chute(self, value):
+        if value:
+            self._chute = value
+            self.chute_upper = value.upper()
+            self.chutes.append(value)
+
+    @property
+    def quantidade_chutes(self):
+        return len(self.chutes)
+
+    @property
+    def tentativa(self):
+        return f"Tentativa {self.quantidade_chutes+1}!"
+    
+    def existe(self, chute):
+        return chute in self.chutes or chute.upper() in self.chutes
 
 def jogar():
     imprimir_cabecalho()    
 
-    palavra_secreta_obj = carregar_palavra_secreta()
-
-    chutes = []
     acertou = False    
+    palavra_secreta_obj = carregar_palavra_secreta()
     erro_obj = erros_obj(0, 7)
+    chute_obj = chutes_obj()
 
     while(not erro_obj.enforcou() and not acertou):
-        continuar, chute, chute_upper = pedir_chute(palavra_secreta_obj.mascara_str(), chutes, erro_obj)
-        if continuar:
-            acertou = verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta_obj)
-        
+        if pedir_chute(palavra_secreta_obj.mascara_str(), erro_obj, chute_obj):
+            acertou = verificar_acerto(erro_obj, chute_obj, palavra_secreta_obj)
+    
+    desenhar_forca(erro_obj.erros)
     imprimir_resultado_cabecalho(palavra_secreta_obj.palavra_secreta)
     if acertou:        
-        imprimir_mensagem_acertou(chutes, erro_obj.erros)
+        imprimir_mensagem_acertou(erro_obj, chute_obj.quantidade_chutes, palavra_secreta_obj.tamanho_palavra())
     elif erro_obj.enforcou():
-        imprimir_mensagem_perdeu(len(chutes) == erro_obj.erros)
+        imprimir_mensagem_perdeu(chute_obj.quantidade_chutes == erro_obj.erros)
     imprimir_resultado_rodape()
 
-def verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta_obj):
-    if chute_upper in palavra_secreta_obj.palavra_secreta_upper:
+def verificar_acerto(erro_obj, chute_obj, palavra_secreta_obj):
+    if chute_obj.chute_upper in palavra_secreta_obj.palavra_secreta_upper:
         # desenhar_forca(erro_obj.erros)
         index = 0
         for letra in palavra_secreta_obj.palavra_secreta_upper:
-            if chute_upper == letra:
-                print(f"Acertou. Letra '{chute}' na posição {index}")
+            if chute_obj.chute_upper == letra:
+                print(f"Acertou. Letra '{chute_obj.chute}' na posição {index}")
                 palavra_secreta_obj.atualizar_mascara(index)
             index+=1
         return palavra_secreta_obj.acertou()
@@ -66,42 +95,35 @@ def verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta_obj):
         plural_vez = "vez" + ("es" if erro_obj.chances_erro() > 1 else "")
         complemento_msg = f" Você pode errar apenas mais {erro_obj.chances_erro()} {plural_vez}" if erro_obj.chances_erro() > 0 else ""
         print()
-        print(f"Errou... Não tem '{chute}' na palavra."+complemento_msg)        
+        print(f"Errou... Não tem '{chute_obj.chute}' na palavra."+complemento_msg)        
         return False
 
-def pedir_chute(mascara, chutes, erros_obj):
+def pedir_chute(mascara, erros_obj, chute_obj):
     print()
     desenhar_forca(erros_obj.erros)
     print(f"Palavra: {mascara}")
-    chute = input(f"Tentativa {len(chutes)+1}!\tErros possíveis {erros_obj.chances_erro()}\tDigite uma letra: ")
+    chute_usuario = input(f"{chute_obj.tentativa}\tErros possíveis {erros_obj.chances_erro()}\tDigite uma letra: ")
     print()
-    chute = chute.strip()
-    continuar, chute, chute_upper = validar_chute(chutes, chute)
-    if not continuar:
-        return False, chute, chute_upper
-    else:
-        chutes.append(chute_upper)
-        return True, chute, chute_upper
+    return validar_chute(chute_obj, chute_usuario.strip())
 
-def validar_chute(chutes, chute):
-    if len(chute) < 1:
+def validar_chute(chute_obj, chute_usuario):
+    if len(chute_usuario) < 1:
         print(f"É dificil digitar uma letra?! 😒 Tenta de novo aí né...")
-        return False, chute, None
-    elif len(chute) > 1:
-        print(f"É dificil digitar só uma letra?! :/ 😡 vamos ignorar o restante: {chute[1:]}")
-        chute = chute[0]
+        return False
+    elif len(chute_usuario) > 1:
+        print(f"É dificil digitar só uma letra?! :/ 😡 vamos ignorar o restante: {chute_usuario[1:]}")
+        chute_usuario = chute_usuario[0]
 
-    if not chute.isalpha():
+    if not chute_usuario.isalpha():
         print("Só letras, blz? Tenta de novo aí que dessa vez não vou arrancar sua cabeça... 😇")
-        return False, chute, None
+        return False
 
-    chute_upper = chute.upper()
-
-    if chute_upper in chutes:
-        print(f"Você já chutou a letra '{chute}', me ajuda aí né... 🤦‍ Quer perder uma tentativa assim fácil?")
-        return False, chute, None
-
-    return True, chute, chute_upper
+    if chute_obj.existe(chute_usuario):
+        print(f"Você já chutou a letra '{chute_usuario}', me ajuda aí né... 🤦‍ Quer perder uma tentativa assim fácil?")
+        return False
+    else:
+        chute_obj.chute = chute_usuario
+        return True
 
 def inicializar_mascara(palavra_secreta):
     return list("_" * len(palavra_secreta)) # "_" for letra in palavra_secreta
@@ -178,11 +200,13 @@ def imprimir_caveira():
     print(r"       \_______/           ")
 
 
-def imprimir_mensagem_acertou(chutes, erros):
+def imprimir_mensagem_acertou(erros_obj, quantidade_chutes, tamanho_palavra):
     print("🏆 Você ganhou! 👏".upper().center(tamanho_tela))
     print("Parabéns, você é o máximo!")
-    print(f"Você conseguiu em {len(chutes)} tentativas")
-    if erros <= 1:
+    print(f"Você conseguiu em {quantidade_chutes} tentativas")
+    if quantidade_chutes == tamanho_palavra:
+        print("Você foi perfeito, não errou uma sequer! Que isso hein!")
+    elif erros_obj.erros == erros_obj.limite - 1:
         print("Foi quase hein... última chance haha")
     imprimir_trofeu()
 
