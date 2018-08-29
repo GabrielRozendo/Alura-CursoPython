@@ -111,50 +111,15 @@ def desenha_forca(erros):
     print("  _______     ")
     print(" |/      |    ")
 
-    if(erros == 1):
-        print(" |      (_)   ")
-        print(" |            ")
-        print(" |            ")
-        print(" |            ")
-
-    if(erros == 2):
-        print(" |      (_)   ")
-        print(r" |      \     ")
-        print(" |            ")
-        print(" |            ")
-
-    if(erros == 3):
-        print(" |      (_)   ")
-        print(" |      \|    ")
-        print(" |            ")
-        print(" |            ")
-
-    if(erros == 4):
-        print(" |      (_)   ")
-        print(" |      \|/   ")
-        print(" |            ")
-        print(" |            ")
-
-    if(erros == 5):
-        print(" |      (_)   ")
-        print(" |      \|/   ")
-        print(" |       |    ")
-        print(" |            ")
-
-    if(erros == 6):
-        print(" |      (_)   ")
-        print(" |      \|/   ")
-        print(" |       |    ")
-        print(" |      /     ")
-
-    if (erros == 7):
-        print(" |      (x)   ")
-        print(" |      \|/   ")
-        print(" |       |    ")
-        print(" |      / \   ")
-
-    print(" |            ")
-    print("_|___         ")
+    print(" |      ({})   ".format("_" if erros < 7 else "x"))
+    print(" |      {}{}{}   ".format(
+                                    "\\" if erros >= 2 else " ",
+                                    "|" if erros >= 3 else " ",
+                                    "/" if erros >= 4 else " "))
+    print(" |       {}    ".format("|" if erros >= 5 else " "))
+    print(" |      {} {}     ".format(
+                                    "/" if erros >= 6 else " ",
+                                    "\\" if erros == 7 else " "))
     print()
 
 
@@ -171,22 +136,22 @@ def imprimir_trofeu():
     print("        '-------'       ")
 
 def imprimir_forca():
-    print("    _______________         ")
-    print("   /               \       ")
-    print("  /                 \      ")
-    print("//                   \/\  ")
-    print("\|   XXXX     XXXX   | /   ")
-    print(" |   XXXX     XXXX   |/     ")
-    print(" |   XXX       XXX   |      ")
-    print(" |                   |      ")
-    print(" \__      XXX      __/     ")
-    print("   |\     XXX     /|       ")
-    print("   | |           | |        ")
-    print("   | I I I I I I I |        ")
-    print("   |  I I I I I I  |        ")
-    print("   \_             _/       ")
-    print("     \_         _/         ")
-    print("       \_______/           ")
+    print(r"    _______________         ")
+    print(r"   /               \       ")
+    print(r"  /                 \      ")
+    print(r"//                   \/\  ")
+    print(r"\|   XXXX     XXXX   | /   ")
+    print(r" |   XXXX     XXXX   |/     ")
+    print(r" |   XXX       XXX   |      ")
+    print(r" |                   |      ")
+    print(r" \__      XXX      __/     ")
+    print(r"   |\     XXX     /|       ")
+    print(r"   | |           | |        ")
+    print(r"   | I I I I I I I |        ")
+    print(r"   |  I I I I I I  |        ")
+    print(r"   \_             _/       ")
+    print(r"     \_         _/         ")
+    print(r"       \_______/           ")
 
 
 def imprimir_mensagem_acertou(chutes):
