@@ -13,50 +13,68 @@ class erros_obj():
     def enforcou(self):
         return self.erros == self.limite
 
+class palavra_secreta_obj():
+    def __init__(self, palavra_secreta):
+        self.palavra_secreta = palavra_secreta
+        self.palavra_secreta_upper = palavra_secreta.upper()
+        self.mascara = inicializar_mascara(palavra_secreta)
+        
+    def mascara_str(self):
+        return ' '.join(self.mascara)
+
+    def atualizar_mascara(self, index):
+        self.mascara[index] = self.palavra_secreta[index]
+
+    def acertou(self):
+        return not "_" in self.mascara
+
+
 def jogar():
     imprimir_cabecalho()    
 
-    palavra_secreta, palavra_secreta_upper = carregar_palavra_secreta()
+    palavra_secreta_obj = carregar_palavra_secreta()
 
     chutes = []
-    mascara = inicializar_mascara(palavra_secreta)
-    enforcou = False
     acertou = False    
     erro_obj = erros_obj(0, 7)
 
     while(not erro_obj.enforcou() and not acertou):
-        continuar, chute, chute_upper = pedir_chute(mascara, chutes, erro_obj.limite)
+        continuar, chute, chute_upper = pedir_chute(palavra_secreta_obj.mascara_str(), chutes, erro_obj)
         if continuar:
-            acertou, mascara = verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara)
+            acertou = verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta_obj)
         
-    imprimir_resultado_cabecalho(palavra_secreta)
+    imprimir_resultado_cabecalho(palavra_secreta_obj.palavra_secreta)
     if acertou:        
-        imprimir_mensagem_acertou(chutes)
-    elif enforcou:
-        imprimir_mensagem_perdeu()
+        imprimir_mensagem_acertou(chutes, erro_obj.erros)
+    elif erro_obj.enforcou():
+        imprimir_mensagem_perdeu(len(chutes) == erro_obj.erros)
     imprimir_resultado_rodape()
 
-def verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta, palavra_secreta_upper, mascara):
-    if chute_upper in palavra_secreta_upper:
+def verificar_acerto(erro_obj, chute, chute_upper, palavra_secreta_obj):
+    if chute_upper in palavra_secreta_obj.palavra_secreta_upper:
+        # desenhar_forca(erro_obj.erros)
         index = 0
-        for letra in palavra_secreta_upper:
+        for letra in palavra_secreta_obj.palavra_secreta_upper:
             if chute_upper == letra:
                 print(f"Acertou. Letra '{chute}' na posição {index}")
-                mascara[index] = palavra_secreta[index]
+                palavra_secreta_obj.atualizar_mascara(index)
             index+=1
-        acertou = not "_" in mascara
-        return acertou, mascara
+        return palavra_secreta_obj.acertou()
     else:
         erro_obj.erros+=1
-        desenha_forca(erro_obj.erros)
+        # desenhar_forca(erro_obj.erros)
         plural_vez = "vez" + ("es" if erro_obj.chances_erro() > 1 else "")
-        print(f"Errou... Não tem '{chute}' na palavra. Você pode errar apenas mais {erro_obj.chances_erro()} {plural_vez}")        
-        return False, mascara
+        complemento_msg = f" Você pode errar apenas mais {erro_obj.chances_erro()} {plural_vez}" if erro_obj.chances_erro() > 0 else ""
+        print()
+        print(f"Errou... Não tem '{chute}' na palavra."+complemento_msg)        
+        return False
 
-def pedir_chute(mascara, chutes, erros_possiveis):
+def pedir_chute(mascara, chutes, erros_obj):
     print()
-    print(f"Palavra: {''.join(mascara)}")
-    chute = input(f"Tentativa {len(chutes)+1}!\tErros possíveis {erros_possiveis}\tDigite uma letra: ")
+    desenhar_forca(erros_obj.erros)
+    print(f"Palavra: {mascara}")
+    chute = input(f"Tentativa {len(chutes)+1}!\tErros possíveis {erros_obj.chances_erro()}\tDigite uma letra: ")
+    print()
     chute = chute.strip()
     continuar, chute, chute_upper = validar_chute(chutes, chute)
     if not continuar:
@@ -91,9 +109,7 @@ def carregar_palavra_secreta(nome_arquivo = "palavras.txt"):
             palavras.append(linha.strip())
 
     numero_aleatorio = random.randrange(0, len(palavras))
-    palavra_secreta = palavras[numero_aleatorio]
-
-    return palavra_secreta, palavra_secreta.upper()
+    return palavra_secreta_obj(palavras[numero_aleatorio])
 
 def imprimir_cabecalho():
     imprimir_linha()
@@ -101,27 +117,30 @@ def imprimir_cabecalho():
     imprimir_linha()
     print()
 
-def imprimir_mensagem_perdeu():
+def imprimir_mensagem_perdeu(errou_tudo):
     print("Você perdeu!".upper().center(tamanho_tela))
-    print("Não desista, quem sabe na próxima...")
+    if errou_tudo:
+        print("Poxa, mas também você não acertou nenhuma né...")
+    else:
+        print("Não desista, quem sabe na próxima...")
     print()
-    imprimir_forca()
+    imprimir_caveira()
 
-def desenha_forca(erros):
+def desenhar_forca(erros):
     print("  _______     ")
     print(" |/      |    ")
 
-    print(" |      ({})   ".format("_" if erros < 7 else "x"))
-    print(" |      {}{}{}   ".format(
-                                    "\\" if erros >= 2 else " ",
-                                    "|" if erros >= 3 else " ",
+    print(" |      {}   ".format("   " if erros ==0 else "(x)" if erros == 7 else "(_)"))
+    print(" |      {1}{0}{2}   ".format(
+                                    "|" if erros >= 2 else " ",
+                                    "\\" if erros >= 3 else " ",
                                     "/" if erros >= 4 else " "))
     print(" |       {}    ".format("|" if erros >= 5 else " "))
     print(" |      {} {}     ".format(
                                     "/" if erros >= 6 else " ",
                                     "\\" if erros == 7 else " "))
+    print("_|" + "_" * 12)
     print()
-
 
 def imprimir_trofeu():
     print("       ___________      ")
@@ -135,7 +154,7 @@ def imprimir_trofeu():
     print("         _.' '._        ")
     print("        '-------'       ")
 
-def imprimir_forca():
+def imprimir_caveira():
     print(r"    _______________         ")
     print(r"   /               \       ")
     print(r"  /                 \      ")
@@ -154,12 +173,12 @@ def imprimir_forca():
     print(r"       \_______/           ")
 
 
-def imprimir_mensagem_acertou(chutes):
+def imprimir_mensagem_acertou(chutes, erros):
     print("Você ganhou!".upper().center(tamanho_tela))
     print("Parabéns, você é o máximo!")
     print(f"Você conseguiu em {len(chutes)} tentativas")
-    if len(chutes)>= 9:
-        print("Foi quase hein... haha")
+    if erros <= 1:
+        print("Foi quase hein... última chance haha")
     imprimir_trofeu()
 
 def imprimir_resultado_rodape():
